@@ -1,0 +1,135 @@
+{% from 'MopaBootstrapBundle::flash.html.twig' import session_flash %}
+{% if form is defined %}
+{% form_theme form "MopaBootstrapBundle:Form:fields.html.twig" %}
+{% endif %}
+<!DOCTYPE html>
+
+{% block html_tag %}
+<html lang="{{ app.request.locale }}">
+{% endblock html_tag %}
+
+{% block head %}
+    <head>
+        <meta charset="{{ _charset }}" />
+        {% block head_style %}
+            {% stylesheets
+            '@PainelGetNetAppBundle/Resources/public/less/style.less' filter="less"
+            %}
+            <link href="{{ asset_url }}" type="text/css" rel="stylesheet" media="screen" />
+            {% endstylesheets %}
+        {% endblock head_style %}
+
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        {% block head_script %}
+            {# Overwrite this block to add your own js here, to get them generated into final files
+            {% javascripts
+                'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'
+            %}
+                <script type="text/javascript" src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+             #}
+        {% endblock head_script %}
+
+        <title>{% block title %}Painel de consulta à GetNet{% endblock title %}</title>
+        {% block favicon %}<link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />{% endblock %}
+        {% block head_bottom %}
+        {% endblock head_bottom %}
+    </head>
+{% endblock head %}
+
+{% block body_tag %}
+<body>
+{% endblock body_tag %}
+
+{% block body_start %}{% endblock body_start %}
+
+{% block body %}
+    {% block navbar %}
+        {% embed '@MopaBootstrap/Navbar/navbar.html.twig' with { fixedTop: true, inverse: false, id: 'navbar' } %}
+            {% block brand %}
+                <a class="navbar-brand" href="{{ path('default_index') }}">Painel de consulta à GetNet</a>
+            {% endblock %}
+
+            {% block menu %}
+                {{ mopa_bootstrap_menu('main_menu', {'automenu': 'navbar'}) }}
+                {{ mopa_bootstrap_menu('user_menu', {'automenu': 'navbar', 'pull-right': true }) }}
+            {% endblock %}
+        {% endembed %}
+    {% endblock navbar %}
+
+    {% block container %}
+        {% block container_div_start %}<div class="{% block container_class %}container{% endblock container_class %}">{% endblock container_div_start %}
+            {% block header %}{% endblock header %}
+
+        {% block content_div_start %}<div class="content">{% endblock content_div_start %}
+        {% block page_header %}
+            {% block headline %}{% endblock headline %}
+        {% endblock page_header %}
+
+        {#{% block flashes %}#}
+            {#{% if app.session.flashbag.peekAll|length > 0 %}#}
+                {#<div class="row">#}
+                    {#<div class="col-sm-12">#}
+                        {#{{ session_flash() }}#}
+                    {#</div>#}
+                {#</div>#}
+            {#{% endif %}#}
+        {#{% endblock flashes %}#}
+
+        {% block content_row %}
+
+        {% endblock content_row %}
+
+        {% block content_div_end %}</div>{% endblock content_div_end %}
+
+        {% block container_div_end %}</div><!-- /container -->{% endblock container_div_end %}
+    {% endblock container %}
+
+    {% block footer_tag_start %}
+        <footer  class="footer">
+    {% endblock footer_tag_start %}
+
+    {% block footer %}
+        <div class="container">
+            <p class="text-muted">Desenvolvido por <a href="http://www.giovanini.com.br">Fernando Giovanini</a> - {{ "now"|date('Y') }}</p>
+        </div>
+    {% endblock footer %}
+
+    {% block footer_tag_end %}
+        </footer>
+    {% endblock footer_tag_end %}
+
+    {% block body_end_before_js %}{% endblock body_end_before_js %}
+
+    {% block foot_script %}
+        {# To only use a subset or add more js overwrite and copy paste this block
+        To speed up page loads save a copy of jQuery in your project and override this block to include the correct path
+        Otherwise the regeneration is done on every load in dev more with use_controller: true
+         #}
+        {% block foot_script_assetic %}
+            {% javascripts
+            'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'
+            '@MopaBootstrapBundle/Resources/public/bootstrap/js/tooltip.js'
+            '@MopaBootstrapBundle/Resources/public/bootstrap/js/*.js'
+            '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-collection.js'
+            '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-subnav.js'
+            %}
+            <script type="text/javascript" src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+        {% endblock foot_script_assetic %}
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="popover"]').popover();
+            });
+        </script>
+    {% endblock foot_script %}
+{% endblock body %}
+
+{% block body_end %}
+{% endblock body_end %}
+</body>
+</html>

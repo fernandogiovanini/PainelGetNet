@@ -1,0 +1,175 @@
+{% extends '::layout.html.twig' %}
+
+
+{% block headline %}
+    <h2>Relatório de vendas</h2>
+{% endblock headline %}
+
+{% block content_row %}
+    <div class="row">
+        <div class="form-container">
+            {{ form_start(form, {'attr': {'class': 'clearfix'}}) }}
+            {{ form_row(form.start_date) }}
+            {{ form_row(form.end_date) }}
+            <div class="button-group">
+                {{ form_row(form.buscar) }}
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {% if resumosDeVendas is not null %}
+        {% if resumosDeVendas|length > 0 %}
+        <div class="row data-panel-container">
+
+            <div class="col-sm-3">
+                {{ sonata_block_render({ 'type': 'app.getnet.panel_block' }, {
+                    'title': 'Faturado',
+                    'rows': [
+                        {'value': "R$ " ~ (panelData.faturado|number_format(2,',','.')) }
+                    ]
+                }) }}
+            </div>
+
+            <div class="artithmetics-sign-column">
+                {{ icon('minus') }}
+            </div>
+
+            <div class="col-sm-3">
+                {{ sonata_block_render({ 'type': 'app.getnet.panel_block' }, {
+                    'title': 'A pagar',
+                    'rows': [
+                    {'value': "R$ " ~ (panelData.a_pagar|number_format(2,',','.')) }
+                    ]
+                }) }}
+            </div>
+
+            <div class="artithmetics-sign-column">
+                {{ icon('equals') }}
+            </div>
+
+            <div class="col-sm-4">
+                {{ sonata_block_render({ 'type': 'app.getnet.panel_block' }, {
+                    'title': 'A receber',
+                    'rows': [
+                    {'value': "R$ " ~ (panelData.a_receber|number_format(2,',','.')) }
+                    ]
+                }) }}
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table-summary">
+                    <thead>
+                        <tr>
+                            <th>Forma de pagamento</th>
+                            <th class="positive">Faturado</th>
+                            <th class="negative">Taxas</th>
+                            <th class="result">A receber</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-hover">
+                        <tr>
+                            <th class="row-header">{{ 'SV'|produto_label }}</th>
+                            <td class="positive money">{{ summaryTableData.SV.faturado|default(0)|number_format(2,',','.') }}</td>
+                            <td class="negative money">{{ summaryTableData.SV.a_pagar|default(0)|number_format(2,',','.') }}</td>
+                            <td class="result money">{{ summaryTableData.SV.a_receber|default(0)|number_format(2,',','.') }}</td>
+                        </tr>
+                        <tr>
+                            <th class="row-header">{{ 'SM'|produto_label }}</th>
+                            <td class="positive money">{{ summaryTableData.SM.faturado|default(0)|number_format(2,',','.') }}</td>
+                            <td class="negative money">{{ summaryTableData.SM.a_pagar|default(0)|number_format(2,',','.') }}</td>
+                            <td class="result money">{{ summaryTableData.SM.a_receber|default(0)|number_format(2,',','.') }}</td>
+                        </tr>
+                        {% set subtotalFaturadoCredito = summaryTableData.SV.faturado + summaryTableData.SM.faturado %}
+                        {% set subtotalAPagarCredito = summaryTableData.SV.a_pagar + summaryTableData.SM.a_pagar %}
+                        {% set subtotalAReceberCredito = summaryTableData.SV.a_receber + summaryTableData.SM.a_receber %}
+                        <tr class="subtotal-row">
+                            <th class="row-header">Subtotal Total</th>
+                            <td class="positive-sum money">{{ subtotalFaturadoCredito|default(0)|number_format(2,',','.') }}</td>
+                            <td class="negative-sum money">{{ subtotalAPagarCredito|default(0)|number_format(2,',','.') }}</td>
+                            <td class="result-sum money">{{ subtotalAReceberCredito|default(0)|number_format(2,',','.') }}</td>
+                        </tr>
+                        <tr>
+                            <th class="row-header">{{ 'SE'|produto_label }}</th>
+                            <td class="positive money">{{ summaryTableData.SE.faturado|default(0)|number_format(2,',','.') }}</td>
+                            <td class="negative money">{{ summaryTableData.SE.a_pagar|default(0)|number_format(2,',','.') }}</td>
+                            <td class="result money">{{ summaryTableData.SE.a_receber|default(0)|number_format(2,',','.') }}</td>
+                        </tr>
+                        <tr>
+                            <th class="row-header">{{ 'SR'|produto_label }}</th>
+                            <td class="positive money">{{ summaryTableData.SR.faturado|default(0)|number_format(2,',','.') }}</td>
+                            <td class="negative money">{{ summaryTableData.SR.a_pagar|default(0)|number_format(2,',','.') }}</td>
+                            <td class="result money">{{ summaryTableData.SR.a_receber|default(0)|number_format(2,',','.') }}</td>
+                        </tr>
+                        {% set subtotalFaturadoDebito = summaryTableData.SE.faturado + summaryTableData.SR.faturado %}
+                        {% set subtotalAPagarDebito = summaryTableData.SE.a_pagar + summaryTableData.SR.a_pagar %}
+                        {% set subtotalAReceberDebito = summaryTableData.SE.a_receber + summaryTableData.SR.a_receber %}
+                        <tr class="subtotal-row">
+                            <th class="row-header">Subtotal Total</th>
+                            <td class="positive-sum money">{{ subtotalFaturadoDebito|default(0)|number_format(2,',','.') }}</td>
+                            <td class="negative-sum money">{{ subtotalAPagarDebito|default(0)|number_format(2,',','.') }}</td>
+                            <td class="result-sum money">{{ subtotalAReceberDebito|default(0)|number_format(2,',','.') }}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <th class="row-header">Total</th>
+                            <td class="positive-sum money">{{ summaryTableData.total.faturado|default(0)|number_format(2,',','.') }}</td>
+                            <td class="negative-sum money">{{ summaryTableData.total.a_pagar|default(0)|number_format(2,',','.') }}</td>
+                            <td class="result-sum money">{{ summaryTableData.total.a_receber|default(0)|number_format(2,',','.') }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-actions">
+                    <a href="{{ path('getnet_relatorio_vendas_download', {'startDate': form.start_date.vars.value, 'endDate': form.end_date.vars.value }) }}" class="btn btn-success pull-right" title="Baixar relatório de vendas">{{ icon('download') }}Download</a>
+                </div>
+            </div>
+        </div>
+
+        {% endif %}
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center">N&ordm; registro de venda</th>
+                            <th class="text-center">Forma de pagamento</th>
+                            <th class="text-center">Data da venda</th>
+                            <th class="text-center">Vl. da venda</th>
+                            <th class="text-center">Vl. líquido</th>
+                            <th class="text-center">Taxa calculada</th>
+                            <th class="text-center">Total de parcelas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for resumoDeVenda in resumosDeVendas %}
+                        <tr>
+                            <td class="text-center">{{ resumoDeVenda.numeroDoResumoDaVenda }}</td>
+                            <td class="text-center">{{ resumoDeVenda.produto|produto_label }}</td>
+                            <td class="text-center">{{ resumoDeVenda.dataHoraDaTransacao|date('d/m/Y') }}</td>
+                            <td>R$ {{ resumoDeVenda.valorDaTransacao|number_format(2,',','.') }}</td>
+                            <td>R$ {{ resumoDeVenda.valorLiquido|number_format(2,',','.') }}</td>
+                            <td class="text-right">{{ (resumoDeVenda.taxa_calculada*100)|number_format(2,',','.') }} %</td>
+                            <td class="text-center">{{ resumoDeVenda.totalDeParcelas }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">Nenhuma venda encontrada no período especificado</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-12 text-center">
+                {{ knp_pagination_render(resumosDeVendas) }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

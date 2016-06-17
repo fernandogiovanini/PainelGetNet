@@ -1,0 +1,70 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+services:
+    app.menu_builder:
+        class: PainelGetNet\AppBundle\Menu\Builder
+        arguments: ["@knp_menu.factory"]
+
+    app.main_menu:
+        class: Knp\Menu\MenuItem
+        factory_service: app.menu_builder
+        factory_method: createMainMenu
+        arguments: ["@request_stack"]
+        tags:
+            - { name: knp_menu.menu, alias: main_menu }
+
+    app.user_menu:
+        class: Knp\Menu\MenuItem
+        factory_service: app.menu_builder
+        factory_method: createUserMenu
+        arguments: ["@request_stack", "@=service('security.context').getToken().getUser()"]
+        tags:
+            - { name: knp_menu.menu, alias: user_menu }
+
+    app.twig_getnet_produto_label:
+        class: PainelGetNet\AppBundle\Twig\ProdutoLabelExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    app.twig_getnet_status_do_pagamento_label:
+        class: PainelGetNet\AppBundle\Twig\StatusDoPagamentoLabelExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    app.twig_getnet_tipo_de_movimento_label:
+        class: PainelGetNet\AppBundle\Twig\TipoDeMovimentoLabelExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    app.getnet.panel_block:
+        class: PainelGetNet\AppBundle\Block\GetNet\PanelBlockService
+        arguments: ["app.getnet.panel_block","@templating"]
+        tags:
+            - { name: sonata.block }
+
+    getnet.local_filesystem:
+        class: Symfony\Component\Filesystem\Filesystem
+
+    getnet.statement_file_util:
+        class: PainelGetNet\AppBundle\Service\GetNet\StatementFileUtil
+        arguments: ["%getnet.merchand_file_identificaction%","%getnet.statements_directory%"]
+
+    getnet.statement_file_downloader:
+        class: PainelGetNet\AppBundle\Service\GetNet\StatementFileDownloaderService
+        arguments: ["@getnet_filesystem","@getnet.local_filesystem","@getnet.statement_file_util"]
+        calls:
+            - [setLogger,["@logger"]]
+
+    getnet.statement_extractor:
+        class: PainelGetNet\AppBundle\Service\GetNet\StatementExtractorService
+        arguments: ["@getnet.statement_file_util"]
+        calls:
+            - [setLogger,["@logger"]]
+
+    getnet.payment_confirmation:
+        class: PainelGetNet\AppBundle\Service\GetNet\PaymentsConfirmationService
+        calls:
+            - [setLogger,["@logger"]]

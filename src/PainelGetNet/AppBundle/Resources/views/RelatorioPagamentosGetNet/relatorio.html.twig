@@ -1,0 +1,277 @@
+{% extends '::layout.html.twig' %}
+
+
+{% block headline %}
+    <h2>Relatório de pagamentos</h2>
+{% endblock headline %}
+
+{% block content_row %}
+    <div class="row">
+        <div class="form-container">
+            {{ form_start(form, {'attr': {'class': 'clearfix'}}) }}
+            {{ form_row(form.start_date) }}
+            {{ form_row(form.end_date) }}
+            <div class="button-group">
+                {{ form_row(form.buscar) }}
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {% if pagamentos is not null %}
+        {% if pagamentos|length > 0 %}
+
+            <div class="row data-panel-container">
+
+                <div class="col-sm-3">
+                    {{ sonata_block_render({ 'type': 'app.getnet.panel_block' }, {
+                        'title': 'Total recebido',
+                        'rows': [
+                            {'value': 'R$ ' ~ (pagoPorProdutoSummary.total.valor_liquido|default(0)|number_format(2,',','.'))}
+                        ]
+                    }) }}
+                </div>
+
+                <div class="artithmetics-sign-column">
+                    {{ icon('minus') }}
+                </div>
+
+                <div class="col-sm-3">
+                    {{ sonata_block_render({ 'type': 'app.getnet.panel_block' }, {
+                        'title': 'Aluguel POS',
+                        'rows': [
+                        {'value': 'R$ ' ~ (aluguelDaPos.valor_do_ajuste_com_sinal|abs|number_format(2,',','.'))}
+                        ]
+                    }) }}
+                </div>
+
+                <div class="artithmetics-sign-column">
+                    {{ icon('equals') }}
+                </div>
+
+                <div class="col-sm-4">
+                    {{ sonata_block_render({ 'type': 'app.getnet.panel_block' }, {
+                        'title': 'Lançado CC',
+                        'rows': [
+                            {'value': 'R$ ' ~ ((pagoPorProdutoSummary.total.valor_liquido+aluguelDaPos.valor_do_ajuste_com_sinal)|default(0)|number_format(2,',','.'))}
+                        ]
+                    }) }}
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-bordered table-summary">
+                        <caption>Pagamentos recebidos</caption>
+                        <thead>
+                            <tr>
+                                <th>Forma de pagamento</th>
+                                <th class="positive">Recebto normal</th>
+                                <th class="positive">Recebto antecipado</th>
+                                <th class="positive">Recebto total</th>
+                                <th class="negative">Taxas normal</th>
+                                <th class="negative">Taxas antecip</th>
+                                <th class="negative">Total de taxas</th>
+                                <th class="result">Valor líquido</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-hover">
+                            <tr>
+                                <th class="row-header">{{ 'SV'|produto_label }}</th>
+                                <td class="positive money">{{ pagoPorProdutoSummary.SV.recebido_normal|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive money">{{ pagoPorProdutoSummary.SV.recebido_antecipado|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive money">{{ pagoPorProdutoSummary.SV.recebido_total|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">{{ pagoPorProdutoSummary.SV.taxas_normal|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">{{ pagoPorProdutoSummary.SV.taxas_antecipado|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">{{ pagoPorProdutoSummary.SV.taxas_total|default(0)|number_format(2,',','.') }}</td>
+                                <td class="result money">{{ pagoPorProdutoSummary.SV.valor_liquido|default(0)|number_format(2,',','.') }}</td>
+                            </tr>
+
+                            {% set taxasNormalMaster = pagoPorProdutoSummary.SM.taxas_normal + aluguelDaPos.valor_do_ajuste %}
+                            {% set taxasTotalMaster = pagoPorProdutoSummary.SM.taxas_total + aluguelDaPos.valor_do_ajuste %}
+                            {% set valorLiquidoMaster = pagoPorProdutoSummary.SM.valor_liquido - aluguelDaPos.valor_do_ajuste %}
+                            <tr>
+                                <th class="row-header">{{ 'SM'|produto_label }}</th>
+                                <td class="positive money">{{ pagoPorProdutoSummary.SM.recebido_normal|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive money">{{ pagoPorProdutoSummary.SM.recebido_antecipado|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive money">{{ pagoPorProdutoSummary.SM.recebido_total|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">{{ taxasNormalMaster|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">{{ pagoPorProdutoSummary.SM.taxas_antecipado|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">{{ taxasTotalMaster|default(0)|number_format(2,',','.') }}</td>
+                                <td class="result money">{{ valorLiquidoMaster|default(0)|number_format(2,',','.') }}</td>
+                            </tr>
+
+                            {% set subtotalRecebidoNormalCredito = pagoPorProdutoSummary.SV.recebido_normal + pagoPorProdutoSummary.SM.recebido_normal %}
+                            {% set subtotalRecebidoAntecipadoCredito = pagoPorProdutoSummary.SV.recebido_antecipado + pagoPorProdutoSummary.SM.recebido_antecipado %}
+                            {% set subtotalRecebidoTotalCredito = pagoPorProdutoSummary.SV.recebido_total + pagoPorProdutoSummary.SM.recebido_total %}
+                            {% set subtotalTaxasNormalCredito = pagoPorProdutoSummary.SV.taxas_normal + taxasNormalMaster %}
+                            {% set subtotalTaxasAntecipadoCredito = pagoPorProdutoSummary.SV.taxas_antecipado + pagoPorProdutoSummary.SM.taxas_antecipado %}
+                            {% set subtotalTaxasTotalCredito = pagoPorProdutoSummary.SV.taxas_total + taxasTotalMaster %}
+                            {% set subtotalLiquidoCredito = (pagoPorProdutoSummary.SV.valor_liquido + valorLiquidoMaster)  %}
+                            <tr class="subtotal-row">
+                                <th class="row-header">Subtotal Total</th>
+                                <td class="positive-sum money">{{ subtotalRecebidoNormalCredito|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive-sum money">{{ subtotalRecebidoAntecipadoCredito|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive-sum money">{{ subtotalRecebidoTotalCredito|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative-sum money">{{ subtotalTaxasNormalCredito|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative-sum money">{{ subtotalTaxasAntecipadoCredito|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative-sum money">{{ subtotalTaxasTotalCredito|default(0)|number_format(2,',','.') }}</td>
+                                <td class="result-sum money">{{ subtotalLiquidoCredito|default(0)|number_format(2,',','.') }}</td>
+                            </tr>
+
+                            <tr>
+                                <th class="row-header">{{ 'SE'|produto_label }}</th>
+                                <td class="positive money">{{ pagoPorProdutoSummary.SE.recebido_normal|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive money">-</td>
+                                <td class="positive money">{{ pagoPorProdutoSummary.SE.recebido_total|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">{{ pagoPorProdutoSummary.SE.taxas_normal|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">-</td>
+                                <td class="negative money">{{ pagoPorProdutoSummary.SE.taxas_total|default(0)|number_format(2,',','.') }}</td>
+                                <td class="result money">{{ pagoPorProdutoSummary.SE.valor_liquido|default(0)|number_format(2,',','.') }}</td>
+                            </tr>
+
+                            <tr>
+                                <th class="row-header">{{ 'SR'|produto_label }}</th>
+                                <td class="positive money">{{ pagoPorProdutoSummary.SR.recebido_normal|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive money">-</td>
+                                <td class="positive money">{{ pagoPorProdutoSummary.SR.recebido_total|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">{{ pagoPorProdutoSummary.SR.taxas_normal|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">-</td>
+                                <td class="negative money">{{ pagoPorProdutoSummary.SR.taxas_total|default(0)|number_format(2,',','.') }}</td>
+                                <td class="result money">{{ pagoPorProdutoSummary.SR.valor_liquido|default(0)|number_format(2,',','.') }}</td>
+                            </tr>
+
+                            {% set subtotalRecebidoNormalDebito = pagoPorProdutoSummary.SE.recebido_normal + pagoPorProdutoSummary.SR.recebido_normal %}
+                            {% set subtotalRecebidoTotalDebito = pagoPorProdutoSummary.SE.recebido_total + pagoPorProdutoSummary.SR.recebido_total %}
+                            {% set subtotalTaxasNormalDebito = pagoPorProdutoSummary.SE.taxas_normal + pagoPorProdutoSummary.SR.taxas_normal %}
+                            {% set subtotalTaxasTotalDebito = pagoPorProdutoSummary.SE.taxas_total + pagoPorProdutoSummary.SR.taxas_total %}
+                            {% set subtotalLiquidoDebito = pagoPorProdutoSummary.SE.valor_liquido + pagoPorProdutoSummary.SR.valor_liquido %}
+                            <tr class="subtotal-row">
+                                <th class="row-header">Subtotal Total</th>
+                                <td class="positive-sum money">{{ subtotalRecebidoNormalDebito|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive-sum money">-</td>
+                                <td class="positive-sum money">{{ subtotalRecebidoTotalDebito|default(0)|number_format(2,',','.') }}</td>
+
+                                <td class="negative-sum money">{{ subtotalTaxasNormalDebito|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative-sum money">-</td>
+                                <td class="negative-sum money">{{ subtotalTaxasTotalDebito|default(0)|number_format(2,',','.') }}</td>
+
+                                <td class="result-sum money">{{ subtotalLiquidoDebito|default(0)|number_format(2,',','.') }}</td>
+                            </tr>
+                        </tbody>
+
+                        <tfoot>
+                        {% set taxasTotalNormal = pagoPorProdutoSummary.total.taxas_normal + aluguelDaPos.valor_do_ajuste %}
+                        {% set taxasTotal = pagoPorProdutoSummary.total.taxas_total + aluguelDaPos.valor_do_ajuste %}
+                        {% set taxasLiquido = pagoPorProdutoSummary.total.valor_liquido - aluguelDaPos.valor_do_ajuste %}
+                            <tr class="total-row">
+                                <th class="row-header">Total</th>
+                                <td class="positive-sum money">{{ pagoPorProdutoSummary.total.recebido_normal|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive-sum money">{{ pagoPorProdutoSummary.total.recebido_antecipado|default(0)|number_format(2,',','.') }}</td>
+                                <td class="positive-sum money">{{ pagoPorProdutoSummary.total.recebido_total|default(0)|number_format(2,',','.') }}</td>
+
+                                <td class="negative-sum money">{{ taxasTotalNormal|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative-sum money">{{ pagoPorProdutoSummary.total.taxas_antecipado|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative-sum money">{{ taxasTotal|default(0)|number_format(2,',','.') }}</td>
+
+                                <td class="result-sum money">{{ taxasLiquido|default(0)|number_format(2,',','.') }}</td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-bordered table-summary">
+                        <caption>Pagamentos em aberto</caption>
+                        <thead>
+                            <tr>
+                                <th>Forma de pagamento</th>
+                                <th class="positive">A receber</th>
+                                <th class="negative">Taxas a pagar</th>
+                                <th class="result">Valor líquido a receber</th>
+
+                            </tr>
+                        </thead>
+                        <tbody class="table-hover">
+                            <tr>
+                                <th class="row-header">{{ 'SV'|produto_label }}</th>
+                                <td class="positive money">{{ aReceberPorProdutoSummary.SV.a_receber|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">{{ aReceberPorProdutoSummary.SV.taxas|default(0)|number_format(2,',','.') }}</td>
+                                <td class="result money">{{ aReceberPorProdutoSummary.SV.valor_liquido|default(0)|number_format(2,',','.') }}</td>
+                            </tr>
+                            <tr>
+                                <th class="row-header">{{ 'SM'|produto_label }}</th>
+                                <td class="positive money">{{ aReceberPorProdutoSummary.SM.a_receber|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative money">{{ aReceberPorProdutoSummary.SM.taxas|default(0)|number_format(2,',','.') }}</td>
+                                <td class="result money">{{ aReceberPorProdutoSummary.SM.valor_liquido|default(0)|number_format(2,',','.') }}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <th class="row-header">Total</th>
+                                <td class="positive-sum money">{{ aReceberPorProdutoSummary.total.a_receber|default(0)|number_format(2,',','.') }}</td>
+                                <td class="negative-sum money">{{ aReceberPorProdutoSummary.total.taxas|default(0)|number_format(2,',','.') }}</td>
+                                <td class="result-sum money">{{ aReceberPorProdutoSummary.total.valor_liquido|default(0)|number_format(2,',','.') }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-actions">
+                    <a href="{{ path('getnet_relatorio_pagamentos_download', {'startDate': form.start_date.vars.value, 'endDate': form.end_date.vars.value }) }}" class="btn btn-success pull-right" title="Baixar relatório de pagamentos"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>Download</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center">N&ordm; registro de venda</th>
+                            <th class="text-center">Forma de pagamento</th>
+                            <th class="text-center">Data do pagamento</th>
+                            <th class="text-center">Data da venda</th>
+                            <th class="text-center">Parcela</th>
+                            <th class="text-center">Vl. a receber</th>
+                            <th class="text-center">Vl. recebido</th>
+                            <th class="text-center">Taxa GetNet</th>
+                            <th class="text-center">Tipo de pagamento</th>
+                            <th class="text-center">Status do pagamento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for pagamento in pagamentos %}
+                        <tr>
+                            <td class="text-center">{{ pagamento.getNumeroDoRv }}</td>
+                            <td class="text-center">{{ pagamento.getProduto|produto_label }}</td>
+                            <td class="text-center">{{ pagamento.dataDoPagamento|date('d/m/Y') }}</td>
+                            <td class="text-center">{{ pagamento.dataDaVenda|date('d/m/Y') }}</td>
+                            <td class="text-center">{{ pagamento.getParcela }}/{{ pagamento.getTotalDeParcelas }}</td>
+                            <td>R$ {{ pagamento.getValorAReceber|number_format(2,',','.') }}</td>
+                            <td>R$ {{ pagamento.getValorPago|number_format(2,',','.') }}</td>
+                            <td>R$ {{ (pagamento.getValorDeTaxaDeServico + pagamento.getValorDeTaxaDeDesconto)|number_format(2,',','.') }}</td>
+                            <td class="text-center">{{ pagamento.getTipoDeMovimento|tipo_de_movimento_label }}</td>
+                            <td class="text-center">{{ pagamento.getStatusDoPagamento|status_do_pagamento_label }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="10">Nenhum pagamento encontrado no período especificado</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-12 text-center">
+                {{ knp_pagination_render(pagamentos) }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

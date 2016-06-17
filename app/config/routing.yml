@@ -1,0 +1,59 @@
+sonata_user_security:
+    resource: "@SonataUserBundle/Resources/config/routing/sonata_security_1.xml"
+
+sonata_user_resetting:
+    resource: "@SonataUserBundle/Resources/config/routing/sonata_resetting_1.xml"
+    prefix: /resetting
+
+fos_user_profile_show:
+    path: /profile/
+    defaults: { _controller: SonataUserBundle:ProfileFOSUser1:show }
+    methods: [GET]
+
+fos_user_profile_edit_authentication:
+    path: /profile/edit-authentication
+    defaults: { _controller: SonataUserBundle:ProfileFOSUser1:editAuthentication }
+
+fos_user_profile_edit:
+    path: /profile/edit-profile
+    defaults: { _controller: SonataUserBundle:ProfileFOSUser1:editProfile }
+
+sonata_user_profile_show:
+    path: /profile/edit-profile
+    defaults: { _controller: SonataUserBundle:ProfileFOSUser1:editProfile }
+
+sonata_user_profile_edit_authentication:
+    path: /profile/edit-authentication
+    defaults: { _controller: SonataUserBundle:ProfileFOSUser1:editAuthentication }
+
+sonata_user_profile_edit:
+    path: /profile/edit-profile
+    defaults: { _controller: SonataUserBundle:ProfileFOSUser1:editProfile }
+
+sonata_user_register:
+    resource: "@SonataUserBundle/Resources/config/routing/sonata_registration_1.xml"
+    prefix: /register
+
+sonata_user_change_password:
+    resource: "@SonataUserBundle/Resources/config/routing/sonata_change_password_1.xml"
+    prefix: /profile
+
+sonata_user:
+    resource: '@SonataUserBundle/Resources/config/routing/admin_security.xml'
+    prefix: /admin
+
+app:
+    resource: "@PainelGetNetAppBundle/Controller/"
+    type:     annotation
+
+logout:
+    path: /logout
+
+admin:
+    resource: '@SonataAdminBundle/Resources/config/routing/sonata_admin.xml'
+    prefix: /admin
+
+_sonata_admin:
+    resource: .
+    type: sonata_admin
+    prefix: /admin

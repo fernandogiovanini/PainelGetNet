@@ -1,0 +1,41 @@
+data:
+  image: busybox
+  volumes:
+    - ./:/var/www/html/:rw
+
+mysql:
+  image: mysql:5.5
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_USER=root
+    - MYSQL_PASSWORD=root
+    - MYSQL_DATABASE=painel_getnet
+  ports:
+    - 3306:3306
+  volumes:
+    - /var/run/mysqld/
+
+phpapache:
+  build: ./dev-env/phpapache/.
+  volumes:
+      - ./dev-env/phpapache/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./dev-env/phpapache/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./tmp/:/tmp/:rw
+      - /var/run/mysql/
+  volumes_from:
+    - data
+  links:
+    - mysql
+  ports:
+    - 80:80
+
+php-no-xdebug:
+  build: ./dev-env/php-no-xdebug/.
+  volumes:
+      - ./dev-env/php-no-xdebug/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./tmp/:/tmp/:rw
+      - /var/run/mysql/
+  volumes_from:
+    - data
+  links:
+    - mysql

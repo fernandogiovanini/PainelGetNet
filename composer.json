@@ -1,0 +1,75 @@
+{
+    "name": "giovanini/painel-getnet",
+    "license": "MIT",
+    "type": "project",
+    "description": "Painel para consulta de extratos da GetNet",
+    "autoload": {
+        "psr-0": { "": "src/", "SymfonyStandard": "app/" }
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/symfony": "2.6.*",
+        "doctrine/orm": "~2.2,>=2.2.3,<2.5",
+        "doctrine/dbal": "<2.5",
+        "doctrine/doctrine-bundle": "~1.2",
+        "twig/extensions": "~1.0",
+        "symfony/assetic-bundle": "~2.3",
+        "symfony/swiftmailer-bundle": "~2.3",
+        "symfony/monolog-bundle": "2.7.*@dev",
+        "sensio/distribution-bundle": "~3.0,>=3.0.12",
+        "sensio/framework-extra-bundle": "~3.0,>=3.0.2",
+        "incenteev/composer-parameter-handler": "~2.0",
+        "sonata-project/user-bundle": "~2.2",
+        "sonata-project/doctrine-orm-admin-bundle": "~2.3",
+        "sonata-project/easy-extends-bundle": "~2.1",
+        "sonata-project/admin-bundle": "~2.3",
+        "knplabs/knp-menu-bundle": "~1.1",
+        "mopa/bootstrap-bundle": "dev-master",
+        "twbs/bootstrap": "~3.3",
+        "league/flysystem": "~1.0",
+        "league/flysystem-sftp": "~1.0",
+        "oneup/flysystem-bundle": "1.0.0-beta",
+        "monolog/monolog": "1.12.*@dev",
+        "knplabs/knp-paginator-bundle": "~2.4"
+    },
+    "require-dev": {
+        "sensio/generator-bundle": "~2.3"
+    },
+    "scripts": {
+        "post-root-package-install": [
+            "SymfonyStandard\\Composer::hookRootPackageInstall"
+        ],
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles",
+            "Mopa\\Bundle\\BootstrapBundle\\Composer\\ScriptHandler::postInstallSymlinkTwitterBootstrap"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles",
+            "Mopa\\Bundle\\BootstrapBundle\\Composer\\ScriptHandler::postInstallSymlinkTwitterBootstrap"
+        ]
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-web-dir": "web",
+        "symfony-assets-install": "relative",
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml"
+        },
+        "branch-alias": {
+            "dev-master": "2.6-dev"
+        }
+    }
+}

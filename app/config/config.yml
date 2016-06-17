@@ -1,0 +1,279 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+
+framework:
+    #esi:             ~
+    #translator:      { fallbacks: ["%locale%"] }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation: { enable_annotations: true, enabled: true }
+    templating:
+        engines: ['twig']
+        #assets_version: SomeVersionScheme
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    session:
+        # handler_id set to null will use default session handler from php.ini
+        handler_id:  ~
+    fragments:       ~
+    http_method_override: true
+    translator:      { fallback: %locale% }
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    form:
+        resources: ['bootstrap_3_layout.html.twig']
+monolog:
+    handlers:
+        main:
+            type:   stream
+            path:   "%kernel.logs_dir%/%kernel.environment%.log"
+            level:  debug
+        console:
+            type:   console
+            bubble: false
+            verbosity_levels:
+                VERBOSITY_VERBOSE: INFO
+                VERBOSITY_VERY_VERBOSE: DEBUG
+            channels: ["!doctrine"]
+        console_very_verbose:
+            type:   console
+            bubble: false
+            verbosity_levels:
+                VERBOSITY_VERBOSE: NOTICE
+                VERBOSITY_VERY_VERBOSE: NOTICE
+                VERBOSITY_DEBUG: DEBUG
+            channels: ["doctrine"]
+        # uncomment to get logging in your browser
+        # you may have to allow bigger header sizes in your Web server configuration
+        #firephp:
+        #    type:   firephp
+        #    level:  info
+        #chromephp:
+        #    type:   chromephp
+        #    level:  info
+
+# Assetic Configuration
+assetic:
+    debug:          "%kernel.debug%"
+    use_controller: false
+    bundles:        ['MopaBootstrapBundle', 'FOSUserBundle', 'PainelGetNetAppBundle']
+    #java: /usr/bin/java
+    filters:
+        less:
+            node: /usr/bin/node
+            node_paths: [/usr/lib/node_modules]
+            apply_to: "\.less$"
+        cssrewrite: ~
+        #closure:
+        #    jar: "%kernel.root_dir%/Resources/java/compiler.jar"
+        #yui_css:
+        #    jar: "%kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar"
+
+
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   "%database_driver%"
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        charset:  UTF8
+        mapping_types:
+            enum: string
+        types:
+            json: Sonata\Doctrine\Types\JsonType
+        # if using pdo_sqlite as your database driver:
+        #   1. add the path in parameters.yml
+        #     e.g. database_path: "%kernel.root_dir%/data/data.db3"
+        #   2. Uncomment database_path in parameters.yml.dist
+        #   3. Uncomment next line:
+        #     path:     "%database_path%"
+
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        entity_managers:
+            default:
+                mappings:
+                    PainelGetNetAppBundle: ~
+                    PainelGetNetAppBundleGetNet:
+                        type:       annotation
+                        dir:        %kernel.root_dir%/../src/PainelGetNet/AppBundle/Entity/GetNet
+                        prefix:     PainelGetNet\AppBundle\Entity\GetNet
+                        alias:      PainelGetNetAppBundleGetNet
+                    PainelGetNetAppBundleGetNetStatement:
+                        type:       annotation
+                        dir:        %kernel.root_dir%/../src/PainelGetNet/AppBundle/Entity/GetNet/Statement
+                        prefix:     PainelGetNet\AppBundle\Entity\GetNet\Statement
+                        alias:      PainelGetNetAppBundleGetNetStatement
+                    SonataUserBundle: ~
+                    FOSUserBundle: ~
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: "%mailer_transport%"
+    host:      "%mailer_host%"
+    username:  "%mailer_user%"
+    password:  "%mailer_password%"
+    spool:     { type: memory }
+
+fos_user:
+    db_driver:      orm
+    firewall_name:  main
+    user_class:     PainelGetNet\AppBundle\Entity\User
+
+    group:
+        group_class:   PainelGetNet\AppBundle\Entity\Group
+        group_manager: sonata.user.orm.group_manager
+
+    service:
+        user_manager: sonata.user.orm.user_manager
+
+    profile:  # Authentication Form
+        form:
+            type:               fos_user_profile
+            handler:            fos_user.profile.form.handler.default
+            name:               fos_user_profile_form
+            validation_groups:  [Authentication] # Please note : this is not the default value
+
+sonata_user:
+    security_acl:     false
+    class:
+        user:         PainelGetNet\AppBundle\Entity\User
+        group:        PainelGetNet\AppBundle\Entity\Group
+
+    profile:  # Profile Form (firstname, lastname, etc ...)
+        form:
+            type:               sonata_user_profile
+            handler:            sonata.user.profile.form.handler.default
+            name:               sonata_user_profile_form
+            validation_groups:  [Profile]
+
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        sonata.user.block.account:
+        sonata.user.block.menu:
+        sonata.admin.block.admin_list:
+            contexts:   [admin]
+
+        #sonata.admin_doctrine_orm.block.audit:
+        #    contexts:   [admin]
+
+        sonata.block.service.text:
+        sonata.block.service.rss:
+        app.getnet.panel_block: ~
+
+        # Some specific block from the SonataMediaBundle
+        #sonata.media.block.media:
+        #sonata.media.block.gallery:
+        #sonata.media.block.feature_media:
+
+sonata_admin:
+    title: Painel de consulta à GetNet
+    title_logo: https://secure.gravatar.com/avatar?s=28
+    templates:
+        dashboard: SonataAdminBundle:Core:dashboard.html.twig
+
+sonata_doctrine_orm_admin:
+    # default value is null, so doctrine uses the value defined in the configuration
+    entity_manager: ~
+
+    templates:
+        form:
+            - SonataDoctrineORMAdminBundle:Form:form_admin_fields.html.twig
+        filter:
+            - SonataDoctrineORMAdminBundle:Form:filter_admin_fields.html.twig
+        types:
+            list:
+                array:      SonataAdminBundle:CRUD:list_array.html.twig
+                boolean:    SonataAdminBundle:CRUD:list_boolean.html.twig
+                date:       SonataAdminBundle:CRUD:list_date.html.twig
+                time:       SonataAdminBundle:CRUD:list_time.html.twig
+                datetime:   SonataAdminBundle:CRUD:list_datetime.html.twig
+                text:       SonataAdminBundle:CRUD:base_list_field.html.twig
+                trans:      SonataAdminBundle:CRUD:list_trans.html.twig
+                string:     SonataAdminBundle:CRUD:base_list_field.html.twig
+                smallint:   SonataAdminBundle:CRUD:base_list_field.html.twig
+                bigint:     SonataAdminBundle:CRUD:base_list_field.html.twig
+                integer:    SonataAdminBundle:CRUD:base_list_field.html.twig
+                decimal:    SonataAdminBundle:CRUD:base_list_field.html.twig
+                identifier: SonataAdminBundle:CRUD:base_list_field.html.twig
+                currency:   SonataAdminBundle:CRUD:list_currency.html.twig
+                percent:    SonataAdminBundle:CRUD:list_percent.html.twig
+                choice:     SonataAdminBundle:CRUD:list_choice.html.twig
+                url:        SonataAdminBundle:CRUD:list_url.html.twig
+
+            show:
+                array:      SonataAdminBundle:CRUD:show_array.html.twig
+                boolean:    SonataAdminBundle:CRUD:show_boolean.html.twig
+                date:       SonataAdminBundle:CRUD:show_date.html.twig
+                time:       SonataAdminBundle:CRUD:show_time.html.twig
+                datetime:   SonataAdminBundle:CRUD:show_datetime.html.twig
+                text:       SonataAdminBundle:CRUD:base_show_field.html.twig
+                trans:      SonataAdminBundle:CRUD:show_trans.html.twig
+                string:     SonataAdminBundle:CRUD:base_show_field.html.twig
+                smallint:   SonataAdminBundle:CRUD:base_show_field.html.twig
+                bigint:     SonataAdminBundle:CRUD:base_show_field.html.twig
+                integer:    SonataAdminBundle:CRUD:base_show_field.html.twig
+                decimal:    SonataAdminBundle:CRUD:base_show_field.html.twig
+                currency:   SonataAdminBundle:CRUD:base_currency.html.twig
+                percent:    SonataAdminBundle:CRUD:base_percent.html.twig
+                choice:     SonataAdminBundle:CRUD:show_choice.html.twig
+                url:        SonataAdminBundle:CRUD:show_url.html.twig
+
+mopa_bootstrap:
+    icons:
+        icon_set: fontawesome4
+        shortcut: icon
+    menu:
+        enabled:  true
+    form:
+        render_fieldset: false
+        show_legend: false
+
+parameters:
+
+    mopa_bootstrap.form.render_optional_text: false
+
+oneup_flysystem:
+    adapters:
+        sftp_getnet:
+            sftp:
+                host: getsftp.getnet.com.br
+                port: 22
+                username: <usuario>
+                password: <senha>
+                root: ~
+                timeout: ~
+                privateKey: ~
+                permPrivate: ~
+                permPublic: ~
+
+    filesystems:
+        getnet:
+            adapter: sftp_getnet
+            alias: getnet_filesystem
+
+knp_paginator:
+    page_range: 10                      # default page range used in pagination control
+    default_options:
+        page_name: page                # page query parameter name
+        sort_field_name: sort          # sort field query parameter name
+        sort_direction_name: direction # sort direction query parameter name
+        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    template:
+        pagination: MopaBootstrapBundle:Pagination:sliding.html.twig
+        sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template

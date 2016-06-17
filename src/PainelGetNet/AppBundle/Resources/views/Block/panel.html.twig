@@ -1,0 +1,25 @@
+{% block block %}
+<div class="panel panel-default data-panel">
+
+    {% block header %}
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ settings.title }}</h3>
+    </div>
+    {% endblock header %}
+
+    {% block body %}
+    <div class="panel-body">
+        {% for row in settings.rows %}
+            <div class="row text-right">
+                {{ row.value }}
+            </div>
+        {% else %}
+            <div class="row text-right">
+                0!
+            </div>
+        {% endfor %}
+    </div>
+    {% endblock body %}
+
+</div>
+{% endblock block %}

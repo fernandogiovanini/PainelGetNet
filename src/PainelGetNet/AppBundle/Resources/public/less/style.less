@@ -1,0 +1,237 @@
+@import "../../../../../../vendor/mopa/bootstrap-bundle/Mopa/Bundle/BootstrapBundle/Resources/public/less/mopabootstrapbundle.less";
+@import "../../../../../../vendor/mopa/bootstrap-bundle/Mopa/Bundle/BootstrapBundle/Resources/public/less/mopabootstrapbundle-fa4.less";
+
+@import "variables.less";
+@import "bootswatch.less";
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+.footer a{
+  color: @footer-link-color;
+}
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  padding: 60px 15px 0;
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
+
+.panel-form{
+  padding: 10px;
+  .panel-heading {
+    border-color: #000;
+  }
+}
+
+.button-group{
+  .make-md-column(12);
+  margin-top: 20px;
+}
+
+.table-actions{
+  .make-xs-column(12);
+  background-color: @gray-light;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+a i{
+  margin-right: 12px;
+}
+
+i.fa.fa-equals:after{
+  content: "=";
+}
+
+.artithmetics-sign-column{
+  .make-sm-column(1);
+  .text-center();
+}
+
+/* MENU */
+
+.dropdown-submenu{
+  position:relative;
+}
+
+.dropdown-submenu > .dropdown-menu
+{
+  top:0;
+  left:100%;
+  margin-top:-6px;
+  margin-left:-1px;
+  -webkit-border-radius:0 6px 6px 6px;
+  -moz-border-radius:0 6px 6px 6px;
+  border-radius:0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover > .dropdown-menu{
+  display:block;
+}
+
+.dropdown-submenu > a:after{
+  display:block;
+  content:" ";
+  float:right;
+  width:0;
+  height:0;
+  border-color:transparent;
+  border-style:solid;
+  border-width:5px 0 5px 5px;
+  border-left-color:#cccccc;
+  margin-top:5px;
+  margin-right:-10px;
+}
+
+.dropdown-submenu:hover > a:after{
+  border-left-color:#ffffff;
+}
+
+.dropdown-submenu .pull-left{
+  float:none;
+}
+
+.dropdown-submenu.pull-left > .dropdown-menu{
+  left:-100%;
+  margin-left:10px;
+  -webkit-border-radius:6px 0 6px 6px;
+  -moz-border-radius:6px 0 6px 6px;
+  border-radius:6px 0 6px 6px;
+}
+
+/* PAINEL DE DASHBOARD  */
+.data-panel-container > [class*='col-']{
+  padding-right:15px;
+  padding-left:15px;
+}
+
+.data-panel-container .data-panel .panel-body{
+  font-size: 1.8em;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+div.artithmetics-sign-column{
+  line-height: 750%;
+}
+
+.col-xs-15,
+.col-sm-15,
+.col-md-15,
+.col-lg-15 {
+  position: relative;
+  min-height: 1px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.col-xs-15 {
+  width: 20%;
+  float: left;
+}
+@media (min-width: 768px) {
+  .col-sm-15 {
+    width: 20%;
+    float: left;
+  }
+}
+@media (min-width: 992px) {
+  .col-md-15 {
+    width: 20%;
+    float: left;
+  }
+}
+@media (min-width: 1200px) {
+  .col-lg-15 {
+    width: 20%;
+    float: left;
+  }
+}
+
+.form-container{
+  .make-xs-column(12);
+}
+
+.form-container form{
+  background-color: @gray-light;
+  display: block;
+  margin-bottom: 21px;
+  padding-bottom: 15px;
+  padding-top : 15px;
+}
+
+
+.table-summary{
+  .table();
+  .table-bordered();
+
+  th{ .text-center();  vertical-align: middle; }
+  th.row-header{ .text-left(); vertical-align: middle; }
+  td { font-size: 1.5em; vertical-align: middle; }
+  caption{ color: #FFFFFF; font-size: 2.2em; }
+
+  /* cabeçalhos */
+  th{ background-color: @gray-light; }
+  th.positive { background-color: darken(@highligh-positive, 20%); }
+  th.negative { background-color: darken(@highligh-negative, 20%); }
+  th.result { background-color: darken(@highligh-result, 20%); }
+
+  /* linhas */
+  td { background-color: @gray-light; }
+  td.positive { background-color: @highligh-positive; }
+  td.negative { background-color: @highligh-negative; }
+  td.result { background-color: @highligh-result; }
+
+  /* somas etc */
+  tr.total-row th.row-header{ background-color: darken(@gray-light, 10%); .text-right(); }
+  tr.total-row td.positive-sum{ background-color: darken(@highligh-positive, 10%); }
+  tr.total-row td.negative-sum{ background-color: darken(@highligh-negative, 10%); }
+  tr.total-row td.result-sum{ background-color: darken(@highligh-result, 10%); }
+
+  tr.subtotal-row {
+    th, td{ border-bottom-width: 10px };
+  }
+  tr.subtotal-row th.row-header{ background-color: darken(@gray-light, 5%); .text-right(); }
+  tr.subtotal-row td.positive-sum{ background-color: darken(@highligh-positive, 5%); }
+  tr.subtotal-row td.negative-sum{ background-color: darken(@highligh-negative, 5%); }
+  tr.subtotal-row td.result-sum{ background-color: darken(@highligh-result, 5%); }
+
+  td { background-color: @gray-light; }
+  td.positive { background-color: @highligh-positive; }
+  td.negative { background-color: @highligh-negative; }
+  td.result { background-color: @highligh-result; }
+
+  td.money, th.money{ .text-right(); }
+  td.money .currency{ .text-left(); }
+}
