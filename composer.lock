@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6861d334fe1edbeab2db6bd564f32926",
-    "content-hash": "f98691e5878021d6767aae785dd7d28e",
+    "hash": "a8249966c32024cc9a2d9925712a1dae",
+    "content-hash": "1c5dff99d416d31ac270c5cdda84dc3c",
     "packages": [
         {
             "name": "cocur/slugify",
@@ -1830,17 +1830,17 @@
         },
         {
             "name": "mopa/bootstrap-bundle",
-            "version": "dev-master",
+            "version": "v3.0.0",
             "target-dir": "Mopa/Bundle/BootstrapBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phiamo/MopaBootstrapBundle.git",
-                "reference": "5f05310a402a1df686da090808a160ab627507d3"
+                "reference": "0205959643168208f3b313b2e00ca643441850b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phiamo/MopaBootstrapBundle/zipball/5f05310a402a1df686da090808a160ab627507d3",
-                "reference": "5f05310a402a1df686da090808a160ab627507d3",
+                "url": "https://api.github.com/repos/phiamo/MopaBootstrapBundle/zipball/0205959643168208f3b313b2e00ca643441850b4",
+                "reference": "0205959643168208f3b313b2e00ca643441850b4",
                 "shasum": ""
             },
             "require": {
@@ -1898,7 +1898,7 @@
                 "form",
                 "template"
             ],
-            "time": "2016-05-23 15:22:39"
+            "time": "2015-11-27 15:18:23"
         },
         {
             "name": "mopa/composer-bridge",
@@ -3868,7 +3868,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "symfony/monolog-bundle": 20,
-        "mopa/bootstrap-bundle": 20,
         "oneup/flysystem-bundle": 10,
         "monolog/monolog": 20
     },

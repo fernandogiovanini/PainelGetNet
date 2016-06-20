@@ -1,5 +1,5 @@
 {
-    "name": "giovanini/painel-getnet",
+    "name": "fernandogiovanini/painel-getnet",
     "license": "MIT",
     "type": "project",
     "description": "Painel para consulta de extratos da GetNet",
@@ -24,8 +24,8 @@
         "sonata-project/easy-extends-bundle": "~2.1",
         "sonata-project/admin-bundle": "~2.3",
         "knplabs/knp-menu-bundle": "~1.1",
-        "mopa/bootstrap-bundle": "dev-master",
-        "twbs/bootstrap": "~3.3",
+        "mopa/bootstrap-bundle": "~3.0",
+        "twbs/bootstrap": "~3.3.0",
         "league/flysystem": "~1.0",
         "league/flysystem-sftp": "~1.0",
         "oneup/flysystem-bundle": "1.0.0-beta",
@@ -59,7 +59,8 @@
         ]
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "cache-dir": "/tmp"
     },
     "extra": {
         "symfony-app-dir": "app",

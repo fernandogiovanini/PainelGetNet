@@ -42,3 +42,5 @@ RUN npm install -g less
 
 # Diretório de trabalho
 WORKDIR /var/www/html
+
+USER www-data

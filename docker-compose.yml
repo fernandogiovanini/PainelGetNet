@@ -20,20 +20,18 @@ phpapache:
   volumes:
       - ./dev-env/phpapache/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ./dev-env/phpapache/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      - ./tmp/:/tmp/:rw
       - /var/run/mysql/
   volumes_from:
     - data
   links:
     - mysql
   ports:
-    - 80:80
+    - 80:8080
 
 php-no-xdebug:
   build: ./dev-env/php-no-xdebug/.
   volumes:
       - ./dev-env/php-no-xdebug/php.ini:/usr/local/etc/php/conf.d/php.ini
-      - ./tmp/:/tmp/:rw
       - /var/run/mysql/
   volumes_from:
     - data

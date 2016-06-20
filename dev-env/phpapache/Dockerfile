@@ -36,4 +36,7 @@ RUN usermod -u 1000 www-data
 ADD vhost.conf /etc/apache2/sites-available/000-default.conf
 RUN a2ensite 000-default.conf
 
+# Altera a porta padrão
+ADD apache2.conf /etc/apache2/apache2.conf
+
 WORKDIR /var/www/html

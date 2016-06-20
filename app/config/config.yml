@@ -236,7 +236,7 @@ sonata_doctrine_orm_admin:
 
 mopa_bootstrap:
     icons:
-        icon_set: fontawesome4
+        icon_set: fontawesome
         shortcut: icon
     menu:
         enabled:  true
