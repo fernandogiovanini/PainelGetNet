@@ -39,3 +39,7 @@
 /composer.phar
 
 /tmp
+
+web/css/*
+web/js/*
+web/fonts/*
