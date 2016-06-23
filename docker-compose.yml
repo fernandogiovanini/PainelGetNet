@@ -20,7 +20,6 @@ phpapache:
   volumes:
       - ./dev-env/phpapache/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ./dev-env/phpapache/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      - /var/run/mysql/
   volumes_from:
     - data
   links:
@@ -32,7 +31,6 @@ php-no-xdebug:
   build: ./dev-env/php-no-xdebug/.
   volumes:
       - ./dev-env/php-no-xdebug/php.ini:/usr/local/etc/php/conf.d/php.ini
-      - /var/run/mysql/
   volumes_from:
     - data
   links:
